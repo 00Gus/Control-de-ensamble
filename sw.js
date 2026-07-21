@@ -1,4 +1,4 @@
-const CACHE_NAME = 'varillas-cache-v14';
+const CACHE_NAME = 'varillas-cache-v15';
 const urlsToCache = [
   './',
   './index.html',

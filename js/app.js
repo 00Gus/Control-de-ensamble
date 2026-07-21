@@ -37,6 +37,60 @@ updateOnlineStatus(); // Estado inicial
 const toastEl = document.getElementById('toast');
 const syncStatusEl = document.getElementById('sync-status');
 
+// Sincronización en segundo plano al volver internet
+async function sincronizarPendientes() {
+    if (!navigator.onLine || GOOGLE_SCRIPT_URL === "") return;
+    
+    // 1. Sincronizar Nuevos
+    const pendientes = registros.filter(r => r.sincronizado === false);
+    // 2. Sincronizar Editados
+    const editados = registros.filter(r => r.editadoOffline === true);
+    
+    if (pendientes.length === 0 && editados.length === 0) return;
+    
+    showToast(`Sincronizando ${pendientes.length + editados.length} registros pendientes... ☁️`);
+    
+    let huboErrores = false;
+
+    // Subir nuevos
+    for (let r of pendientes) {
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(r)
+            });
+            r.sincronizado = true;
+        } catch (e) {
+            huboErrores = true;
+        }
+    }
+    
+    // Subir editados
+    for (let r of editados) {
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "editar_registro", id: r.id, nuevaCantidad: r.cantidad })
+            });
+            r.editadoOffline = false;
+        } catch (e) {
+            huboErrores = true;
+        }
+    }
+    
+    guardarRegistros();
+    
+    if (!huboErrores) {
+        showToast('¡Sincronización completada! ✅');
+    }
+}
+
+window.addEventListener('online', sincronizarPendientes);
+
 // === INICIO DE SESIÓN ===
 document.getElementById('btn-login').addEventListener('click', async () => {
     const pin = document.getElementById('admin-password').value;
@@ -63,8 +117,22 @@ document.getElementById('btn-login').addEventListener('click', async () => {
             const data = await response.json();
             
             if(data && Array.isArray(data)) {
+                // Rescatar los que no se han sincronizado o tienen ediciones pendientes
+                const huerfanos = registros.filter(r => r.sincronizado === false);
+                const idsEditados = registros.filter(r => r.editadoOffline === true).map(r => String(r.id));
+                const mapaEditados = {};
+                registros.filter(r => r.editadoOffline === true).forEach(r => mapaEditados[String(r.id)] = r.cantidad);
+                
                 registros = data.map(r => {
-                    r.id = String(r.id); // Convertir ID a String siempre
+                    r.id = String(r.id);
+                    r.sincronizado = true; // Todo lo de la nube está sincronizado
+                    
+                    // Si este registro estaba editado offline, preservar la cantidad local
+                    if (idsEditados.includes(r.id)) {
+                        r.cantidad = mapaEditados[r.id];
+                        r.editadoOffline = true;
+                    }
+
                     // Si Google Sheets convirtió la fecha a ISO, la reformateamos
                     if (r.fechaFormateada && r.fechaFormateada.includes('T')) {
                         const d = new Date(r.fechaCompleta || r.fechaFormateada);
@@ -72,7 +140,13 @@ document.getElementById('btn-login').addEventListener('click', async () => {
                     }
                     return r;
                 });
+                
+                // Fusionar huérfanos
+                registros = [...huerfanos, ...registros];
                 guardarRegistros();
+                
+                // Disparar sincronización por si el internet volvió
+                sincronizarPendientes();
             }
         } catch (error) {
             console.error("No se pudo sincronizar, usando memoria local.", error);
@@ -160,7 +234,8 @@ document.getElementById('btn-guardar-registro').addEventListener('click', async 
         nombre: userNames[userId],
         cantidad: cantidad,
         fechaCompleta: fechaActual.toISOString(),
-        fechaFormateada: formatearFecha(fechaActual.toISOString())
+        fechaFormateada: formatearFecha(fechaActual.toISOString()),
+        sincronizado: false // Marca inicial
     };
 
     // 1. Guardar Localmente
@@ -182,6 +257,8 @@ document.getElementById('btn-guardar-registro').addEventListener('click', async 
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(nuevoRegistro)
             });
+            nuevoRegistro.sincronizado = true; // Sincronización exitosa
+            guardarRegistros();
             syncStatusEl.textContent = 'Sincronizado con Google Sheets ✅';
         } catch (error) {
             console.error('Error sincronizando:', error);
@@ -252,10 +329,14 @@ window.editarRegistro = async function(id) {
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: "editar_registro", id: id, nuevaCantidad: nuevaCantidad })
             });
+            registro.editadoOffline = false;
+            guardarRegistros();
             showToast('Registro editado con éxito en la nube ✅');
         } catch (e) {
             console.error(e);
-            showToast('Editado localmente. La nube no se actualizó (sin internet).');
+            registro.editadoOffline = true;
+            guardarRegistros();
+            showToast('Editado localmente. Se enviará cuando regrese el internet ⚠️');
         }
     }
 };
