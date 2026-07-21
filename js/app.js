@@ -1,6 +1,6 @@
 // Configuración
 const PRECIO_VARILLA = 1.60;
-const ADMIN_PASSWORD = "GusAdmin!"; // Cambia esta contraseña si lo deseas
+const ADMIN_PASSWORD = "0000"; // Cambia esta contraseña si lo deseas
 let GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRHHwvbn0beZQeRiVm42HAVn5aQEK6wLjTvmDWNSKlD6UM5v-cxVyxQ8b-Ej1x-PWwCg/exec"; // URL de tu Google Apps Script
 
 // Estado Local
