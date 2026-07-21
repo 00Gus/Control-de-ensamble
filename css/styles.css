@@ -1,0 +1,333 @@
+/* Variables CSS para la paleta de colores y estilos globales */
+:root {
+    --primary-color: #2196F3; /* Azul */
+    --primary-hover: #1976D2;
+    --success-color: #4CAF50; /* Verde */
+    --success-hover: #388E3C;
+    --warning-color: #FF9800; /* Naranja */
+    --warning-hover: #F57C00;
+    --text-color: #333333;
+    --bg-color: #F5F7FA;
+    --card-bg: #FFFFFF;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --nav-height: 70px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    /* Evitar el scroll del body por la barra inferior */
+    padding-bottom: var(--nav-height); 
+}
+
+/* Tipografía y Espaciado */
+h1, h2, h3 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+/* Header */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+header h1 {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+#logout-btn {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Layout General */
+.view {
+    display: none;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+.view.active {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tarjetas (Cards) */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}
+
+/* Formularios adaptados a uso móvil a una mano */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fff;
+}
+
+.large-input, .large-select {
+    padding: 16px;
+    font-size: 1.2rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn-large {
+    font-size: 1.2rem;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+.btn-orange {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+/* Listas de Historial */
+.history-list-container {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.record-list {
+    list-style: none;
+}
+
+.record-item {
+    background: #f9f9f9;
+    border-left: 4px solid var(--primary-color);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.record-info strong {
+    display: block;
+    font-size: 1.1rem;
+    color: #222;
+}
+.record-info small {
+    color: #666;
+    display: block;
+    font-size: 0.85rem;
+}
+
+.btn-delete {
+    background: #ffebee;
+    color: #d32f2f;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Grid de Totales */
+.totals-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.total-card {
+    background: #f1f8e9;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #c5e1a5;
+    text-align: center;
+}
+.total-card h4 {
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    color: #33691e;
+}
+.total-amount {
+    font-size: 1.8rem;
+    color: var(--success-color);
+    font-weight: bold;
+    margin-top: 5px;
+}
+.total-rods {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Alertas */
+.alert {
+    background-color: #fff3e0;
+    border-left: 4px solid var(--warning-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 0 8px 8px 0;
+}
+.error-text {
+    color: #f44336;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+.sync-status {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+/* NAVEGACIÓN INFERIOR TIPO APP */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.nav-item {
+    flex: 1;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.nav-icon {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+}
+
+.nav-item span {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+}
+.nav-item.active .nav-icon {
+    transform: scale(1.1);
+}
+
+/* Toast Notificaciones */
+.toast {
+    position: fixed;
+    bottom: calc(var(--nav-height) + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #323232;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    opacity: 0.95;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
