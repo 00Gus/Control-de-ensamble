@@ -1,7 +1,7 @@
 // Configuración
 const PRECIO_VARILLA = 1.60;
 const ADMIN_PASSWORD = "GusAdmin!"; // Cambia esta contraseña si lo deseas
-let GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp0uUz7jNdRu1QH9JEFs-2P6z-5b0hDudB1SFwLv7bxeTxHv4OpnXPFk21Q5vANctW3w/exec"; // URL de tu Google Apps Script
+let GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRHHwvbn0beZQeRiVm42HAVn5aQEK6wLjTvmDWNSKlD6UM5v-cxVyxQ8b-Ej1x-PWwCg/exec"; // URL de tu Google Apps Script
 
 // Estado Local
 let registros = JSON.parse(localStorage.getItem('registros_varillas')) || [];
